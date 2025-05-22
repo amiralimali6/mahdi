@@ -1,17 +1,155 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اسم و شماره</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- فونت فارسی Vazirmatn -->
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مشخصات</title>
+  <!-- فونت فارسی Vazirmatn -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- آیکون کپی -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      direction: rtl;
+      background: linear-gradient(135deg, #dbeafe, #e0f7fa, #fef9c3);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+    }
+
+    #card-label {
+      font-size: 1.1rem;
+      color: #333;
+      margin-top: 15px;
+    }
+
+    #card-number {
+      direction: ltr;
+      unicode-bidi: plaintext;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 10px 0 20px;
+      letter-spacing: 2px;
+      color: #222;
+    }
+
+    button {
+      font-family: 'Vazirmatn', sans-serif;
+      padding: 10px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00bcd4;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background-color: #0097a7;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #4caf50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h1>نام: محمد حسن زارعی</h1>
-        <h2>شماره کارت: 6037 9972 7827 8107</h2>
-    </div>
+
+  <div class="card">
+    <h1>نام: محمد حسن زارعی</h1>
+    <div id="card-label">شماره کارت:</div>
+    <div id="card-number">6037 9972 7827 8107</div>
+    <button onclick="copyToClipboard()">
+      <i class="bi bi-clipboard"></i>
+      کپی شماره کارت
+    </button>
+  </div>
+
+  <div id="toast">شماره کارت کپی شد!</div>
+
+  <script>
+    function copyToClipboard() {
+      const number = document.getElementById('card-number').innerText.trim();
+  
+      // ابتدا سعی می‌کنیم از Clipboard API مدرن استفاده کنیم
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(number).then(() => {
+          showToast("شماره کارت کپی شد!");
+        }).catch(() => {
+          fallbackCopy(number);
+        });
+      } else {
+        fallbackCopy(number);
+      }
+    }
+  
+    // روش جایگزین برای گوشی‌هایی که Clipboard API پشتیبانی نمی‌کنند
+    function fallbackCopy(text) {
+      const tempInput = document.createElement("input");
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand("copy");
+        showToast("شماره کارت کپی شد!");
+      } catch (err) {
+        alert("متأسفیم، کپی کردن در این دستگاه پشتیبانی نمی‌شود.");
+      }
+      document.body.removeChild(tempInput);
+    }
+  
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+  
+
 </body>
 </html>
